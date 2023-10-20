@@ -1,3 +1,6 @@
+M_IN_KM = 1000
+
+
 class InfoMessage:
     """Информационное сообщение о тренировке."""
     pass
@@ -5,21 +8,24 @@ class InfoMessage:
 
 class Training:
     """Базовый класс тренировки."""
+    LEN_STEP = 0.65
 
     def __init__(self,
                  action: int,
                  duration: float,
                  weight: float,
                  ) -> None:
-        pass
+        self.action = action
+        self.duration = duration
+        self.weight = weight
 
     def get_distance(self) -> float:
         """Получить дистанцию в км."""
-        pass
+        return self.action * LEN_STEP / M_IN_KM
 
-    def get_mean_speed(self) -> float:
+    def get_mean_speed(self, distance) -> float:
         """Получить среднюю скорость движения."""
-        pass
+        return distance / self.duration
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
@@ -32,22 +38,44 @@ class Training:
 
 class Running(Training):
     """Тренировка: бег."""
-    pass
+    CALORIES_MEAN_SPEED_MULTIPLIER = 18
+    CALORIES_MEAN_SPEED_SHIFT = 1.79
 
 
 class SportsWalking(Training):
     """Тренировка: спортивная ходьба."""
-    pass
+    def __init__(self, action: int,
+                 duration: float,
+                 weight: float,
+                 height: float) -> None:
+        super().__init__(action, duration, weight)
+        self.height = height
 
 
 class Swimming(Training):
     """Тренировка: плавание."""
-    pass
+    LEN_STEP = 1.38
+
+    def __init__(self, action: int,
+                 duration: float,
+                 weight: float,
+                 length_pool: float,
+                 count_pool: int) -> None:
+        super().__init__(action, duration, weight)
+        self.length_pool = length_pool
+        self.count_pool = count_pool
 
 
 def read_package(workout_type: str, data: list) -> Training:
     """Прочитать данные полученные от датчиков."""
-    pass
+    types = {
+        'SWM': Swimming,
+        'RUN': Running,
+        'WLK': SportsWalking,
+    }
+
+    if workout_type in types:
+        return types[workout_type](*data)
 
 
 def main(training: Training) -> None:
