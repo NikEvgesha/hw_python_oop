@@ -121,7 +121,8 @@ class Swimming(Training):
                 / self.M_IN_KM / self.duration)
 
     def get_spent_calories(self) -> float:
-        self.mean_speed = self.get_mean_speed()
+        if self.mean_speed == 0:
+            self.mean_speed = self.get_mean_speed()
         return ((self.mean_speed + self.CALORIES_MEAN_SPEED_SHIFT)
                 * self.CALORIES_KOEF1
                 * self.weight * self.duration)
